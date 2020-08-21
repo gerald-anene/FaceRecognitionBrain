@@ -1,36 +1,26 @@
 import React,{Component} from 'react';
+import { connect } from 'react-redux';
+import { UserEntersName, UserEntersEmail, UserEntersPassword } from './RegisterActions';
 
+const mapStateToProps=(state)=>{
+  return{
+    name:state.onRegistration.name,
+    email:state.onRegistration.email,
+    password:state.onRegistration.password
+  }
+}
 
+const mapDispatchToProps=(dispatch)=>{
+ return{
+  onNameChange:(event)=>dispatch(UserEntersName(event.target.value)),
+  onEmailChange:(event)=>dispatch(UserEntersEmail(event.target.value)),
+  onPasswordChange:(event)=>dispatch(UserEntersPassword(event.target.value))
 
-
-
-
+ } 
+}
 
 
 class Register extends Component{
-
-	constructor(props){
-		super(props);
-
-		this.state={
-			name:'',
-			email:'',
-			password:''
-		}
-	}
-
-	onNameChange=(event)=>{
-		this.setState({name:event.target.value})
- 
-	}
-
-	onEmailChange=(event)=>{
-      this.setState({email:event.target.value});
-	}
-
-	onPasswordChange=(event)=>{
-      this.setState({password:event.target.value});
-	 }
 
 	onRegister=()=>{
 		fetch('http://localhost:3000/register',{
@@ -39,9 +29,9 @@ class Register extends Component{
 			body:JSON.stringify(
 
                                 {   
-                                	"name":this.state.name,
-                                	"email":this.state.email,
-                                	"password":this.state.password
+                                	"name":this.props.name,
+                                	"email":this.props.email,
+                                	"password":this.props.password
                                 }
             	                )
 		})
@@ -73,7 +63,7 @@ class Register extends Component{
 				        className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
 				        type="text" name="name"
 			            id="name"
-			            onChange={this.onNameChange}
+			            onChange={this.props.onNameChange}
 			         />
 			      </div>
 			      <div className="mt3">
@@ -83,7 +73,7 @@ class Register extends Component{
 			         type="email" 
 			         name="email-address" 
 			          id="email-address"
-			          onChange={this.onEmailChange}
+			          onChange={this.props.onEmailChange}
 			          />
 			      </div>
 			      <div className="mv3">
@@ -93,7 +83,7 @@ class Register extends Component{
 			        type="password" 
 			        name="password" 
 			         id="password"
-			         onChange={this.onPasswordChange}
+			         onChange={this.props.onPasswordChange}
 			         />
 			      </div>
 			    </fieldset>
@@ -115,4 +105,4 @@ class Register extends Component{
 	
 }
 
-export default Register;
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

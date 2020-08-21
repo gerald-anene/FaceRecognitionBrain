@@ -9,6 +9,9 @@ import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
 import Register from './Components/Register/Register';
+import { connect } from 'react-redux';
+import { UserEntersUrl } from './Actions';
+
 
 
 
@@ -29,6 +32,19 @@ const particlesOption={
 
 const app = new Clarifai.App({apiKey: 'a7a721567ad7479a9fe6ac6a3a2144ce'});
 
+const mapStateToProps=(state)=>{
+  return{
+    input:state.onEnterImageUrl.input
+  }
+}
+
+const mapDispatchToProps=(dispatch)=>{
+ return{
+  onInputChange:(event)=>dispatch(UserEntersUrl(event.target.value))
+
+ } 
+}
+
 
 class App extends Component{
 
@@ -36,7 +52,6 @@ class App extends Component{
     super(props);
 
     this.state={
-      input:'',
       imageUrl:'',
       box:{
         top_row:'',
@@ -56,15 +71,10 @@ class App extends Component{
     }
   }
 
-  onInputChange=(event)=>{
-
-      this.setState({input:event.target.value})
-  }
-
   onButtonSubmit=()=>{
-    this.setState({imageUrl:this.state.input});
+    this.setState({imageUrl:this.props.input});
     
-      app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+      app.models.predict(Clarifai.FACE_DETECT_MODEL, this.props.input)
         .then(response=>{
           if(response){
             if(document.getElementById('imagefield').value!==''){
@@ -149,7 +159,8 @@ class App extends Component{
 
   render(){
     const {isSignedIn,imageUrl, box, route}=this.state;
-    const {onRouteChange,onButtonSubmit,onInputChange}=this;
+    const {onRouteChange,onButtonSubmit}=this;
+    const { onInputChange }=this.props;
    
 
   	return(
@@ -183,4 +194,4 @@ class App extends Component{
     
 }
 
-export default App;
+export default connect(mapStateToProps,mapDispatchToProps)(App);

@@ -4,11 +4,20 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import 'tachyons';
+import { Provider } from "react-redux";
+import {createStore, applyMiddleware, combineReducers } from "redux";
+import { createLogger } from 'redux-logger';
+import  thunkMiddleware  from 'redux-thunk';
+import { onEnterImageUrl } from './Reducers';
+import { onRegistration } from './Components/Register/RegisterReducers';
 
+const logger=createLogger();
+const rootReducer=combineReducers({onEnterImageUrl,onRegistration})
+const store=createStore(rootReducer,applyMiddleware(thunkMiddleware, logger))
 
 ReactDOM.render(
-  
-    <App />,document.getElementById('root')
+    <Provider store={store}>
+    <App /></Provider>,document.getElementById('root')
 
     );
 
