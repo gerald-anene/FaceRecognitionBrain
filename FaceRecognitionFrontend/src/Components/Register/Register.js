@@ -1,28 +1,9 @@
 import React,{Component} from 'react';
-import { connect } from 'react-redux';
-import { UserEntersName, UserEntersEmail, UserEntersPassword } from './RegisterActions';
-
-const mapStateToProps=(state)=>{
-  return{
-    name:state.onRegistration.name,
-    email:state.onRegistration.email,
-    password:state.onRegistration.password
-  }
-}
-
-const mapDispatchToProps=(dispatch)=>{
- return{
-  onNameChange:(event)=>dispatch(UserEntersName(event.target.value)),
-  onEmailChange:(event)=>dispatch(UserEntersEmail(event.target.value)),
-  onPasswordChange:(event)=>dispatch(UserEntersPassword(event.target.value))
-
- } 
-}
 
 
 class Register extends Component{
 
-	onRegister=()=>{
+	 onRegister=()=>{
 		fetch('http://localhost:3000/register',{
 			method:'post',
 			headers:{'Content-Type':'application/json'},
@@ -43,9 +24,8 @@ class Register extends Component{
 		  		
 		  	}
 		  })
-
-		
 	}
+
 
 	render(){
 
@@ -105,4 +85,4 @@ class Register extends Component{
 	
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default Register;

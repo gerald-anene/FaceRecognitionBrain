@@ -10,10 +10,7 @@ import Clarifai from 'clarifai';
 import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
 import Register from './Components/Register/Register';
 import { connect } from 'react-redux';
-import { UserEntersUrl } from './Actions';
-
-
-
+import { UserEntersUrl,UserEntersName, UserEntersEmail, UserEntersPassword } from './Actions';
 
 
 const particlesOption={
@@ -34,14 +31,19 @@ const app = new Clarifai.App({apiKey: 'a7a721567ad7479a9fe6ac6a3a2144ce'});
 
 const mapStateToProps=(state)=>{
   return{
-    input:state.onEnterImageUrl.input
+    input:state.onEnterImageUrl.input,
+    name:state.onRegistration.name,
+    email:state.onRegistration.email,
+    password:state.onRegistration.password
   }
 }
 
 const mapDispatchToProps=(dispatch)=>{
  return{
-  onInputChange:(event)=>dispatch(UserEntersUrl(event.target.value))
-
+  onInputChange:(event)=>dispatch(UserEntersUrl(event.target.value)),
+  onNameChange:(event)=>dispatch(UserEntersName(event.target.value)),
+  onEmailChange:(event)=>dispatch(UserEntersEmail(event.target.value)),
+  onPasswordChange:(event)=>dispatch(UserEntersPassword(event.target.value))
  } 
 }
 
@@ -182,7 +184,7 @@ class App extends Component{
                :(
                   route==='signin'
                    ?<Signin onRouteChange={onRouteChange} loadUser={this.loadUser} />
-                   :<Register onRouteChange={onRouteChange} loadUser={this.loadUser}/>
+                   :<Register onRouteChange={onRouteChange} loadUser={this.loadUser} name={this.props.name} email={this.props.email} password={this.props.password} onNameChange={this.props.onNameChange} onEmailChange={this.props.onEmailChange} onPasswordChange={this.props.onPasswordChange}/>
                 )
                 
               }

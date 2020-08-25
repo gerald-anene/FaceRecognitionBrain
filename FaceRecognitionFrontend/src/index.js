@@ -8,8 +8,7 @@ import { Provider } from "react-redux";
 import {createStore, applyMiddleware, combineReducers } from "redux";
 import { createLogger } from 'redux-logger';
 import  thunkMiddleware  from 'redux-thunk';
-import { onEnterImageUrl } from './Reducers';
-import { onRegistration } from './Components/Register/RegisterReducers';
+import { onEnterImageUrl,onRegistration } from './Reducers';
 
 const logger=createLogger();
 const rootReducer=combineReducers({onEnterImageUrl,onRegistration})
