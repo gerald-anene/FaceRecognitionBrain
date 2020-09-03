@@ -36,12 +36,10 @@ onSignIn=(props)=>{
 	 .then(response=>response.json())
 	 .then(user=>{
 	 	if(user.id){
-	 		this.props.loadUser(user)
-	 		this.props.onRouteChange('home');
+	 		this.props.onUpdateUser(user)
 	 	}
 	 })
-	
-	
+	 .then(test=>this.props.onRouteChange('home'))
 }
 	render(){
 

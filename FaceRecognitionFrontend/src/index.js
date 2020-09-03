@@ -8,13 +8,15 @@ import { Provider } from "react-redux";
 import {createStore, applyMiddleware, combineReducers } from "redux";
 import { createLogger } from 'redux-logger';
 import  thunkMiddleware  from 'redux-thunk';
-import { onEnterImageUrl,onRegistration } from './Reducers';
+import { onEnterImageUrl,onRegistration, LoadUser} from './Reducers';
 
 const logger=createLogger();
-const rootReducer=combineReducers({onEnterImageUrl,onRegistration})
+const rootReducer=combineReducers({onEnterImageUrl,onRegistration,LoadUser})
 const store=createStore(rootReducer,applyMiddleware(thunkMiddleware, logger))
 
+
 ReactDOM.render(
+
     <Provider store={store}>
     <App /></Provider>,document.getElementById('root')
 

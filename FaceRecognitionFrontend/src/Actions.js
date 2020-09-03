@@ -2,7 +2,12 @@ import {
 	    ENTER_IMAGE_URL,
 	    REGISTRATION_NAME,
 	    REGISTRATION_EMAIL,
-	    REGISTRATION_PASSWORD
+	    REGISTRATION_PASSWORD,
+	    REGISTERED_USER_PENDING,
+	    REGISTERED_USER_SUCCESS,
+	    REGISTERED_USER_FAILED,
+	    UPDATE_USER,
+	    IMAGE_URL
 	   } from './Constants';
 
 
@@ -30,23 +35,32 @@ export const UserEntersPassword=(text)=>({
 	payload:text
 })
 
-// export const LoadingUsers=({name,email,password})=>(dispatch)=>{
-// 	dispatch({type:LOAD_USERS_PENDING})
-// 	fetch('http://localhost:3000/register',{
-// 			method:'post',
-// 			headers:{'Content-Type':'application/json'},
-// 			body:JSON.stringify(
+export const LoadRegisterdUser=(User)=>(dispatch)=>{
 
-//                                 {   
-//                                 	"name":name,
-//                                 	"email":email,
-//                                 	"password":password
-//                                 }
-//             	                )
-// 		})
-// 		  .then(response=>response.json())
-// 		  .then(data=>dispatch({type:LOAD_USERS_SUCCESS,payload:data}))
-// 		  .catch(error=>dispatch({type:LOAD_USERS_FAILED,payload:error}))
+     dispatch({type:REGISTERED_USER_PENDING});
+     fetch('http://localhost:3000/register',{
+			method:'post',
+			headers:{'Content-Type':'application/json'},
+			body:JSON.stringify(
 
-// }
+                                {   
+                                	"name":User.name,
+                                	"email":User.email,
+                                	"password":User.password
+                                }
+            	                )
+		})
+		.then(response=>response.json())
+		.then(data=>dispatch({type:REGISTERED_USER_SUCCESS, payload:data}))
+		.catch(error=>dispatch({type:REGISTERED_USER_FAILED,payload:error}))
+}
 
+export const UpdateSignedInUser=(user)=>({
+	type:UPDATE_USER,
+	payload:user
+})
+
+export const UpdateImageUrl=(url)=>({
+	type:IMAGE_URL,
+	payload:url
+})

@@ -1,14 +1,14 @@
 import React from 'react';
 
-const Rank=(props)=>{
+const Rank=({name,entries})=>{
 	return (
 		<div className="center">
             <div className='white f3'>
-             {`${props.name}, your current rank is...`}
+             {`${name}, your current rank is...`}
             </div>
 
             <div className='white f1'>
-             {`#${props.entries}`}
+             {`#${entries}`}
             </div>
          </div>
 
@@ -16,3 +16,4 @@ const Rank=(props)=>{
 }
 
 export default Rank;
+

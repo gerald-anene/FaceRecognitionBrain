@@ -10,7 +10,7 @@ import Clarifai from 'clarifai';
 import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
 import Register from './Components/Register/Register';
 import { connect } from 'react-redux';
-import { UserEntersUrl,UserEntersName, UserEntersEmail, UserEntersPassword } from './Actions';
+import { UserEntersUrl,UserEntersName, UserEntersEmail, UserEntersPassword, LoadRegisterdUser, UpdateSignedInUser,UpdateImageUrl } from './Actions';
 
 
 const particlesOption={
@@ -29,21 +29,29 @@ const particlesOption={
 
 const app = new Clarifai.App({apiKey: 'a7a721567ad7479a9fe6ac6a3a2144ce'});
 
-const mapStateToProps=(state)=>{
+const mapStateToProps=state=>{
   return{
     input:state.onEnterImageUrl.input,
-    name:state.onRegistration.name,
-    email:state.onRegistration.email,
-    password:state.onRegistration.password
+    RegName:state.onRegistration.RegName,
+    RegEmail:state.onRegistration.RegEmail,
+    RegPassword:state.onRegistration.RegPassword,
+    isPending:state.LoadUser.isPending,
+    User:state.LoadUser.User,
+    error:state.LoadUser.errorUs,
+    Url:state.LoadUser.Url
+
   }
 }
 
-const mapDispatchToProps=(dispatch)=>{
+const mapDispatchToProps=dispatch=>{
  return{
   onInputChange:(event)=>dispatch(UserEntersUrl(event.target.value)),
   onNameChange:(event)=>dispatch(UserEntersName(event.target.value)),
   onEmailChange:(event)=>dispatch(UserEntersEmail(event.target.value)),
-  onPasswordChange:(event)=>dispatch(UserEntersPassword(event.target.value))
+  onPasswordChange:(event)=>dispatch(UserEntersPassword(event.target.value)),
+  loadUser:(user)=>dispatch(LoadRegisterdUser(user)),
+  onUpdateUser:(user)=>dispatch(UpdateSignedInUser(user)),
+  imageUrl:(url)=>dispatch(UpdateImageUrl(url))
  } 
 }
 
@@ -54,7 +62,6 @@ class App extends Component{
     super(props);
 
     this.state={
-      imageUrl:'',
       box:{
         top_row:'',
         right_col:'',
@@ -63,18 +70,13 @@ class App extends Component{
       },
       route:'signin',
       isSignedIn:false,
-      User:{
-              'id':'',
-              'name':'',
-              'email':'',
-              'entries':0,
-              'joined':''
-      }
     }
   }
 
   onButtonSubmit=()=>{
-    this.setState({imageUrl:this.props.input});
+    this.props.imageUrl(this.props.input)
+
+    console.log(this.props);
     
       app.models.predict(Clarifai.FACE_DETECT_MODEL, this.props.input)
         .then(response=>{
@@ -123,32 +125,19 @@ class App extends Component{
     
    
   }
-
-  loadUser=(user)=>{
-     this.setState({
-      User:{
-        'id':user.id,
-        'name':user.name,
-        'email':user.email,
-        'entries':user.entries,
-        'joined':new Date()
-      }
-     })
-  }
-
   updateUserEntries=()=>{
     fetch('http://localhost:3000/image',{
       method:'put',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        id:this.state.User.id
+        id:this.props.User.id
       })
     })
      .then(response=>response.json())
      .then(user=>{
       if(user){
         this.setState(Object.assign(
-           this.state.User,{
+           this.props.User,{
             entries:user[0].entries
           }
 
@@ -157,12 +146,10 @@ class App extends Component{
      })
   }
 
-
-
   render(){
-    const {isSignedIn,imageUrl, box, route}=this.state;
+    const {isSignedIn, box, route}=this.state;
     const {onRouteChange,onButtonSubmit}=this;
-    const { onInputChange }=this.props;
+    const { onInputChange,Url }=this.props;
    
 
   	return(
@@ -172,19 +159,19 @@ class App extends Component{
                />
                <Navigation onRouteChange={onRouteChange} isSignedIn={isSignedIn} />
                {route==='home'
-                ?<div>
+                ?<div>,lwa    
                    <Logo />
-      	           <Rank name={this.state.User.name} entries={this.state.User.entries} />
+      	           <Rank name={this.props.User.name} entries={this.props.User.entries} />
       	           <ImageLinkForm 
                     onInputChange={onInputChange}
                     onButtonSubmit={onButtonSubmit}
                     />
-                    <FaceRecognition box={box} imageUrl={imageUrl} />
+                    <FaceRecognition box={box} imageUrl={Url} />
                 </div>
                :(
                   route==='signin'
-                   ?<Signin onRouteChange={onRouteChange} loadUser={this.loadUser} />
-                   :<Register onRouteChange={onRouteChange} loadUser={this.loadUser} name={this.props.name} email={this.props.email} password={this.props.password} onNameChange={this.props.onNameChange} onEmailChange={this.props.onEmailChange} onPasswordChange={this.props.onPasswordChange}/>
+                   ?<Signin  onRouteChange={onRouteChange} onUpdateUser={this.props.onUpdateUser} />
+                   :<Register onRouteChange={onRouteChange} loadUser={this.props.loadUser} RegName={this.props.RegName} RegEmail={this.props.RegEmail} RegPassword={this.props.RegPassword} onNameChange={this.props.onNameChange} onEmailChange={this.props.onEmailChange} onPasswordChange={this.props.onPasswordChange}/>
                 )
                 
               }
@@ -197,3 +184,5 @@ class App extends Component{
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(App);
+
+

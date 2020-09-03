@@ -4,26 +4,15 @@ import React,{Component} from 'react';
 class Register extends Component{
 
 	 onRegister=()=>{
-		fetch('http://localhost:3000/register',{
-			method:'post',
-			headers:{'Content-Type':'application/json'},
-			body:JSON.stringify(
-
-                                {   
-                                	"name":this.props.name,
-                                	"email":this.props.email,
-                                	"password":this.props.password
-                                }
-            	                )
-		})
-		  .then(response=>response.json())
-		  .then(user=>{
-		  	if(user){
-		  		this.props.loadUser(user);
-		  		this.props.onRouteChange('home');
-		  		
-		  	}
-		  })
+		const user={
+			name:this.props.RegName,
+			email:this.props.RegEmail,
+			password:this.props.RegPassword
+		}
+     
+      this.props.loadUser(user);
+      this.props.onRouteChange('home');
+      
 	}
 
 
